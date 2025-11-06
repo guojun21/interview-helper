@@ -6,7 +6,6 @@ import {
   QuestionCircleOutlined,
   HomeOutlined,
   LogoutOutlined,
-  ControlOutlined,
 } from '@ant-design/icons'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
@@ -35,17 +34,12 @@ const menuItems = [
     icon: <QuestionCircleOutlined />,
     label: <Link to="/help">帮助</Link>,
   },
-  {
-    key: 'settings',
-    icon: <ControlOutlined />,
-    label: <Link to="/settings">系统设置</Link>,
-  },
 ]
 
 const userMenu = (
   <Menu>
     <Menu.Item key="logout" icon={<LogoutOutlined />}>
-      <Button type="text" style={{ width: '100%' }}>退出登录</Button>
+      <Button type="text" style={{ width: '100%' }} onClick={() => console.log('🚪 [按钮点击] 退出登录')}>退出登录</Button>
     </Menu.Item>
   </Menu>
 )
@@ -60,7 +54,6 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     if (path.startsWith('/interview/new')) return ['interview-new']
     if (path.startsWith('/interview/record')) return ['interview-record']
     if (path.startsWith('/help')) return ['help']
-    if (path.startsWith('/settings')) return ['settings']
     return []
   }, [location.pathname])
 

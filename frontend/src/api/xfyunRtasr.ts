@@ -4,7 +4,7 @@
 import CryptoJS from 'crypto-js';
 import type { MeetingMessage } from '@/store/interviewStore'
 import { useInterviewStore } from '@/store/interviewStore'
-import { useXfyunConfigStore } from '@/store/xfyunConfigStore'
+import { CONFIG } from '@/config'
 
 // 获取当前时间戳（秒）
 function getTimestamp() {
@@ -21,17 +21,12 @@ function getSigna(appid: string, apiKey: string, ts: number) {
 
 // 生成WebSocket URL
 export function getRtasrWebSocketUrl() {
-  const { getAppId, getApiKey } = useXfyunConfigStore.getState();
-  const appId = getAppId();
-  const apiKey = getApiKey();
-  
-  if (!appId || !apiKey) {
-    throw new Error('科大讯飞API配置未完成，请在设置中配置APPID和API_KEY');
-  }
+  const appId = CONFIG.xfyun.appId;
+  const apiKey = CONFIG.xfyun.apiKey;
   
   const ts = getTimestamp();
   const signa = getSigna(appId, apiKey, ts);
-  return `wss://rtasr.xfyun.cn/v1/ws?appid=${appId}&ts=${ts}&signa=${signa}&roleType=2`;
+  return `${CONFIG.xfyun.wsUrl}?appid=${appId}&ts=${ts}&signa=${signa}&roleType=2`;
 }
 
 // 创建WebSocket并处理转写

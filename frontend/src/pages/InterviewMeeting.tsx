@@ -51,6 +51,7 @@ const InterviewMeeting: React.FC = () => {
 
   // 开始面试
   const handleStart = async () => {
+    console.log('🎬 [按钮点击] 开始面试')
     setRecording(true)
     const recorder = new RecorderManager('/xfyunRtasr')
     recorderRef.current = recorder
@@ -81,6 +82,7 @@ const InterviewMeeting: React.FC = () => {
   }
   // 停止面试
   const handleStop = () => {
+    console.log('⏹️ [按钮点击] 停止录音')
     setRecording(false)
     recorderRef.current?.stop()
     wsRef.current?.close()
@@ -246,7 +248,9 @@ const InterviewMeeting: React.FC = () => {
             }} 
             placeholder="输入你的问题" 
           />
-          <button style={{ 
+          <button 
+            onClick={() => console.log('📤 [按钮点击] 发送消息')}
+            style={{ 
             padding: '8px 16px', 
             border: '1px solid #d9d9d9', 
             borderRadius: 4, 
@@ -256,7 +260,9 @@ const InterviewMeeting: React.FC = () => {
           }}>
             发送
           </button>
-          <button style={{ 
+          <button 
+            onClick={() => console.log('✏️ [按钮点击] 自定义提示词')}
+            style={{ 
             padding: '8px 12px', 
             border: '1px solid #d9d9d9', 
             borderRadius: 4, 
@@ -266,7 +272,9 @@ const InterviewMeeting: React.FC = () => {
           }}>
             自定义提示词
           </button>
-          <button style={{ 
+          <button 
+            onClick={() => console.log('📝 [按钮点击] 笔记辅助')}
+            style={{ 
             padding: '8px 12px', 
             border: '1px solid #d9d9d9', 
             borderRadius: 4, 
@@ -317,7 +325,10 @@ const InterviewMeeting: React.FC = () => {
               cursor: 'pointer',
               fontSize: 14
             }} 
-            onClick={() => navigate('/interview/new')}
+            onClick={() => {
+              console.log('⬅️ [按钮点击] 返回设置')
+              navigate('/interview/new')
+            }}
           >
             返回设置
           </button>

@@ -10,4 +10,14 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
+  // Electron 需要相对路径
+  base: './',
+  server: {
+    port: 5173,
+    strictPort: true,
+  },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+  },
 })

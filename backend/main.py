@@ -13,7 +13,7 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 
 from app.database import engine, Base
-from app.routers import auth, sessions
+from app.routers import sessions
 
 load_dotenv(encoding='utf-8')
 
@@ -52,7 +52,6 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(auth.router, prefix="/api/auth", tags=["authentication"])
 app.include_router(sessions.router, prefix="/api/sessions", tags=["sessions"])
 
 @app.get("/")

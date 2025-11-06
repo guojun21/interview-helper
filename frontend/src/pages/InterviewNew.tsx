@@ -18,11 +18,13 @@ const InterviewNew: React.FC = () => {
 
   // 表单项变更同步store
   const handleValuesChange = (changed: any, all: any) => {
+    console.log('📝 [表单变更]', changed)
     setInterviewConfig(changed)
   }
 
   // 新增：前往面试按钮点击事件
   const handleGoToMeeting = () => {
+    console.log('🚀 [按钮点击] 前往面试')
     const values = form.getFieldsValue()
     const params = new URLSearchParams({
       region: values.region || '',
@@ -85,7 +87,7 @@ const InterviewNew: React.FC = () => {
               </Select>
             </Form.Item>
             <Text type="danger">当前问答库为空</Text>
-            <Button type="primary">创建问答库</Button>
+            <Button type="primary" onClick={() => console.log('📚 [按钮点击] 创建问答库')}>创建问答库</Button>
           </Space>
         </div>
         <Divider style={{ margin: '24px 0' }} />

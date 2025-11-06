@@ -1,35 +1,6 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional, List
-
-# User schemas
-class UserBase(BaseModel):
-    username: str
-    email: Optional[EmailStr] = None
-
-class UserCreate(UserBase):
-    password: str
-
-class UserLogin(BaseModel):
-    username: str
-    password: str
-
-class User(UserBase):
-    id: int
-    is_active: bool
-    created_at: datetime
-    updated_at: datetime
-    
-    class Config:
-        from_attributes = True
-
-# Token schemas
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-class TokenData(BaseModel):
-    username: Optional[str] = None
 
 # Session schemas
 class SessionMessageBase(BaseModel):
@@ -56,7 +27,6 @@ class InterviewSessionCreate(InterviewSessionBase):
 class InterviewSession(InterviewSessionBase):
     id: int
     session_id: str
-    user_id: int
     created_at: datetime
     updated_at: datetime
     messages: List[SessionMessage] = []

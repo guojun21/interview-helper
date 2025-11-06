@@ -1,6 +1,6 @@
-import { useApiConfigStore } from '../store/apiConfigStore'
 import { useInterviewStore } from '@/store/interviewStore'
 import { message as antdMessage } from 'antd'
+import { CONFIG } from '@/config'
 
 /**
  * DeepSeek API 响应接口
@@ -39,19 +39,14 @@ interface DeepSeekRequest {
   stream?: boolean
 }
 
-const DEEPSEEK_BASE_URL = 'https://api.deepseek.com'
+const DEEPSEEK_BASE_URL = CONFIG.deepseek.baseUrl
 
 /**
  * 获取DeepSeek配置
  * @returns DeepSeek配置
  */
 const getDeepSeekConfig = () => {
-  const { apiConfigs } = useApiConfigStore.getState()
-  const config = apiConfigs.find(config => config.apiProvider === 'deepseek')
-  if (!config) {
-    throw new Error('DeepSeek configuration not found')
-  }
-  return config
+  return CONFIG.deepseek
 }
 
 /**

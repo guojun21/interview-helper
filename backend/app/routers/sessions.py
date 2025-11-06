@@ -5,7 +5,7 @@ from typing import List
 import uuid
 
 from ..database import get_db
-from ..models import User as UserModel, InterviewSession, SessionMessage
+from ..models import InterviewSession, SessionMessage
 from ..schemas import (
     InterviewSessionCreate, 
     InterviewSession as InterviewSessionSchema,
@@ -13,22 +13,18 @@ from ..schemas import (
     SessionMessageCreate,
     SessionMessage as SessionMessageSchema
 )
-from ..auth import get_current_active_user
 
 router = APIRouter()
 
 @router.post("/", response_model=InterviewSessionSchema)
 async def create_session(
     session: InterviewSessionCreate,
-    current_user: UserModel = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    # Generate unique session ID
+    """创建新会话（无需认证）"""
     session_id = str(uuid.uuid4())
     
-    # Create new session
     db_session = InterviewSession(
-        user_id=current_user.id,
         session_id=session_id,
         title=session.title or f"Interview Session - {session_id[:8]}"
     )
@@ -40,16 +36,15 @@ async def create_session(
 
 @router.get("/", response_model=List[InterviewSessionList])
 async def get_user_sessions(
-    current_user: UserModel = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    # Get sessions with message count
+    """获取所有会话（无需认证）"""
     sessions = db.query(
         InterviewSession,
         func.count(SessionMessage.id).label('message_count')
-    ).outerjoin(SessionMessage).filter(
-        InterviewSession.user_id == current_user.id
-    ).group_by(InterviewSession.id).order_by(
+    ).outerjoin(SessionMessage).group_by(
+        InterviewSession.id
+    ).order_by(
         InterviewSession.updated_at.desc()
     ).all()
     
@@ -69,12 +64,11 @@ async def get_user_sessions(
 @router.get("/{session_id}", response_model=InterviewSessionSchema)
 async def get_session(
     session_id: str,
-    current_user: UserModel = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
+    """获取单个会话（无需认证）"""
     session = db.query(InterviewSession).filter(
-        InterviewSession.session_id == session_id,
-        InterviewSession.user_id == current_user.id
+        InterviewSession.session_id == session_id
     ).first()
     
     if not session:
@@ -89,13 +83,11 @@ async def get_session(
 async def add_message_to_session(
     session_id: str,
     message: SessionMessageCreate,
-    current_user: UserModel = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    # Get session
+    """添加消息到会话（无需认证）"""
     session = db.query(InterviewSession).filter(
-        InterviewSession.session_id == session_id,
-        InterviewSession.user_id == current_user.id
+        InterviewSession.session_id == session_id
     ).first()
     
     if not session:
@@ -104,7 +96,6 @@ async def add_message_to_session(
             detail="Session not found"
         )
     
-    # Create message
     db_message = SessionMessage(
         session_id=session.id,
         message_type=message.message_type,
@@ -125,13 +116,11 @@ async def add_message_to_session(
 @router.get("/{session_id}/messages", response_model=List[SessionMessageSchema])
 async def get_session_messages(
     session_id: str,
-    current_user: UserModel = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    # Get session
+    """获取会话消息（无需认证）"""
     session = db.query(InterviewSession).filter(
-        InterviewSession.session_id == session_id,
-        InterviewSession.user_id == current_user.id
+        InterviewSession.session_id == session_id
     ).first()
     
     if not session:
@@ -149,12 +138,11 @@ async def get_session_messages(
 @router.delete("/{session_id}")
 async def delete_session(
     session_id: str,
-    current_user: UserModel = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
+    """删除会话（无需认证）"""
     session = db.query(InterviewSession).filter(
-        InterviewSession.session_id == session_id,
-        InterviewSession.user_id == current_user.id
+        InterviewSession.session_id == session_id
     ).first()
     
     if not session:

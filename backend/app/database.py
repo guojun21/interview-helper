@@ -6,9 +6,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:yourpassword@localhost:5432/ai_interview_helper")
+# 使用 SQLite 数据库（本地文件）
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/dialoghelper.db")
 
-engine = create_engine(DATABASE_URL)
+# 创建数据目录
+os.makedirs("./data", exist_ok=True)
+
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

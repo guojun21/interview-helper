@@ -11,17 +11,9 @@ const request: AxiosInstance = axios.create({
   },
 })
 
-// 请求拦截器
+// 请求拦截器（无需认证）
 request.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    // 从localStorage获取token
-    const token = localStorage.getItem('token')
-    if (token) {
-      config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${token}`,
-      }
-    }
     return config
   },
   (error) => {
@@ -43,10 +35,7 @@ request.interceptors.response.use(
       
       switch (status) {
         case 401:
-          // 未授权，清除token并跳转到登录页
-          localStorage.removeItem('token')
-          message.error('登录已过期，请重新登录')
-          // 不直接跳转，让用户手动处理
+          message.error('请求未授权')
           break
         case 403:
           message.error('没有权限访问该资源')

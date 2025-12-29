@@ -103,4 +103,5 @@ playwright-report/
 .coverage.*
 .mypy_cache
 .pytest_cache
-.hypothesis
+.hypothesis*.log
+*.pyc

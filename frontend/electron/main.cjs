@@ -1,7 +1,23 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, session } = require('electron');
 const path = require('path');
 
 let mainWindow = null;
+
+// 请求媒体访问权限（麦克风）
+async function requestMediaAccess() {
+  try {
+    const status = await require('electron').systemPreferences.getMediaAccessStatus('microphone');
+    console.log('🎤 麦克风权限状态:', status);
+    
+    if (status !== 'granted') {
+      console.log('🎤 请求麦克风权限...');
+      const granted = await require('electron').systemPreferences.askForMediaAccess('microphone');
+      console.log('🎤 麦克风权限授予:', granted);
+    }
+  } catch (err) {
+    console.error('❌ 请求麦克风权限失败:', err);
+  }
+}
 
 function createWindow() {
   // 创建主窗口
@@ -13,7 +29,10 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      webSecurity: true,
+      webSecurity: false, // 关闭 web 安全限制，允许麦克风访问
+      enableRemoteModule: false,
+      // 允许媒体设备访问
+      allowRunningInsecureContent: false,
     },
     show: false, // 等加载完再显示
     backgroundColor: '#ffffff',
@@ -80,6 +99,8 @@ function createMenu() {
         { label: '重新加载', accelerator: 'CmdOrCtrl+R', role: 'reload' },
         { label: '强制重新加载', accelerator: 'CmdOrCtrl+Shift+R', role: 'forceReload' },
         { type: 'separator' },
+        { label: '开发者工具', accelerator: 'CmdOrCtrl+Option+I', role: 'toggleDevTools' },
+        { type: 'separator' },
         { label: '实际大小', accelerator: 'CmdOrCtrl+0', role: 'resetZoom' },
         { label: '放大', accelerator: 'CmdOrCtrl+Plus', role: 'zoomIn' },
         { label: '缩小', accelerator: 'CmdOrCtrl+-', role: 'zoomOut' },
@@ -106,7 +127,20 @@ function createMenu() {
 }
 
 // App 准备就绪
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  // 请求麦克风权限
+  await requestMediaAccess();
+  
+  // 设置权限处理器
+  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+    console.log('🔐 权限请求:', permission);
+    if (permission === 'media' || permission === 'microphone') {
+      callback(true); // 自动授予麦克风权限
+    } else {
+      callback(false);
+    }
+  });
+  
   createWindow();
 
   // macOS 特有：点击 dock 图标时重新创建窗口

@@ -12,9 +12,9 @@ export const CONFIG = {
   // 科大讯飞配置
   xfyun: {
     appId: '8a2410fb',
-    apiKey: 'e134c33470b15eb856530f925ac96524',
-    apiSecret: 'YWRkOTcwOWJiYWQ0MzNkN2Q0OGFmZWRk',
-    wsUrl: 'wss://office-api-ast-dx.iflyaisol.com/',
+    accessKeyId: 'e134c33470b15eb856530f925ac96524', // APIKey
+    accessKeySecret: 'YWRkOTcwOWJiYWQ0MzNkN2Q0OGFmZWRk', // APISecret
+    wsUrl: 'wss://office-api-ast-dx.iflyaisol.com/ast/communicate/v1',
   },
   
   // 后端 API 地址

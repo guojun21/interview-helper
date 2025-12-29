@@ -13,7 +13,7 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 
 from app.database import engine, Base
-from app.routers import sessions
+from app.routers import sessions, speech
 
 load_dotenv(encoding='utf-8')
 
@@ -53,6 +53,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(sessions.router, prefix="/api/sessions", tags=["sessions"])
+app.include_router(speech.router, prefix="/api/speech", tags=["speech"])
 
 @app.get("/")
 async def root():
